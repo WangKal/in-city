@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment  } from '@react-three/drei';
 import { Box3, Vector3, Color, SRGBColorSpace, ACESFilmicToneMapping } from 'three';
-import { EffectComposer, Bloom } from '@react-three/postprocessing'; // Optional
 
 // Model component that loads the 3D model and sets up the camera
 function Model({ url, controlsRef, cameraRef, setLoading }) {
@@ -196,9 +195,7 @@ export default function Home() {
 
 
  
-  <EffectComposer>
-    <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.8} height={300} />
-  </EffectComposer>
+
   
         </Canvas>
       </div>
