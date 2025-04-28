@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment  } from '@react-three/drei';
 import { Box3, Vector3, Color, SRGBColorSpace, ACESFilmicToneMapping } from 'three';
+import { EffectComposer, Bloom,Vignette,Noise } from '@react-three/postprocessing'; // Optional
+
 
 // Model component that loads the 3D model and sets up the camera
 function Model({ url, controlsRef, cameraRef, setLoading }) {
@@ -120,6 +122,43 @@ function ToneMapping() {
   return null;
 }
 
+function Marker({ position }) {
+  const meshRef = useRef();
+  const auraRef = useRef();
+
+  useFrame((state, delta) => {
+    if (meshRef.current && auraRef.current) {
+      const scale = 1 + Math.sin(state.clock.elapsedTime * 4) * 0.3;
+      meshRef.current.scale.set(scale, scale, scale);
+      auraRef.current.scale.set(scale * 1.2, scale * 1.2, scale * 1.2); // Aura slightly bigger
+    }
+  });
+
+  return (
+    <group position={position}>
+      {/* Main white sphere */}
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[2, 64, 64]} />
+        <meshStandardMaterial color="white" />
+      </mesh>
+
+      {/* Blue aura */}
+      <mesh ref={auraRef}>
+        <sphereGeometry args={[3.2, 64, 64]} /> {/* slightly larger radius */}
+        <meshStandardMaterial 
+          color="#000000"
+          transparent
+          opacity={0.5} 
+          emissive="#004080"
+          emissiveIntensity={2}
+        />
+      </mesh>
+    </group>
+  )
+}
+
+
+
 export default function Home() {
   const controlsRef = useRef();
   const cameraRef = useRef();
@@ -149,8 +188,8 @@ export default function Home() {
         </div>
       )}
       <div style={{
-        width: '80vw',
-        height: '80vh',
+        width: '100vw',
+        height: '100vh',
         backgroundColor: '#1e1e1e',
         borderRadius: '12px',
         boxShadow: '0px 0px 30px rgba(0,0,0,0.6)',
@@ -165,7 +204,8 @@ export default function Home() {
         >
            {/* HDRI Background and lighting */}
   <Suspense fallback={null}>
-    <Environment preset="sunset" background /> 
+  <color attach="background" args={['white']} />
+    {/* <Environment preset="sunset" background /> */}
     {/* "sunset", "warehouse", "city", "dawn", "forest", etc. */}
     {/* OR use a real HDR file: <Environment files="/path/to/yourHDR.hdr" background /> */}
   </Suspense>
@@ -184,17 +224,49 @@ export default function Home() {
             autoRotateSpeed={1}
             minDistance={1}
             maxDistance={200}
-          />
+            minPolarAngle={Math.PI / 4}   // 45 degrees down
+            maxPolarAngle={Math.PI / 2}/>
           <ToneMapping />
           {/* Suspense to handle the loading state of the model */}
           <Suspense fallback={null}>
+          <color attach="background" args={['white']} />
             <Model url="/incity2.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
            <MovingCar url="/car1.glb" initialPosition={[260, 0, -200]} direction="forward" />
            
+
+             {/* Markers */}
+          <Marker position={[50, 40, -200]} />
+          <Marker position={[120, 40, -200]} />
+          <Marker position={[140, 40, -200]} />
+          <Marker position={[160, 40, -150]} />
+          <Marker position={[160, 40, -150]} />
+          <Marker position={[180, 40, -185]} />
+          <Marker position={[150, 40, -95]} />
+          <Marker position={[80, 40, -95]} />
+          <Marker position={[80, 40, -145]} />
+
+          <Marker position={[90, 10, -180]} />
+          <Marker position={[230, 10, -200]} />
+           <Marker position={[205, 10, -110]} />
+          <Marker position={[260, 50, -200]} />
           </Suspense>
 
 
- 
+<EffectComposer>
+  <Bloom 
+    intensity={1.5}
+    luminanceThreshold={0.2}
+    luminanceSmoothing={0.05}
+    radius={0.8}
+  />
+  <Vignette 
+    eskil={false} 
+    offset={0.2} 
+    darkness={0.8} 
+  />
+  <Noise opacity={0.04} />
+</EffectComposer>
+
 
   
         </Canvas>
