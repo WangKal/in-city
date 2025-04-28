@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment  } from '@react-three/drei';
 import { Box3, Vector3, Color, SRGBColorSpace, ACESFilmicToneMapping } from 'three';
-import { EffectComposer, Bloom,Vignette,Noise } from '@react-three/postprocessing'; // Optional
 
 
 // Model component that loads the 3D model and sets up the camera
@@ -252,20 +251,7 @@ export default function Home() {
           </Suspense>
 
 
-<EffectComposer>
-  <Bloom 
-    intensity={1.5}
-    luminanceThreshold={0.2}
-    luminanceSmoothing={0.05}
-    radius={0.8}
-  />
-  <Vignette 
-    eskil={false} 
-    offset={0.2} 
-    darkness={0.8} 
-  />
-  <Noise opacity={0.04} />
-</EffectComposer>
+
 
 
   
