@@ -2,6 +2,11 @@ import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment  } from '@react-three/drei';
 import { Box3, Vector3, Color, SRGBColorSpace, ACESFilmicToneMapping } from 'three';
+import { ClipLoader } from "react-spinners";
+
+function MySpinner() {
+  return <ClipLoader color="#ffffff" size={50} />;
+}
 
 
 // Model component that loads the 3D model and sets up the camera
@@ -181,9 +186,8 @@ export default function Home() {
           color: 'white',
           fontSize: '24px',
           fontWeight: 'bold',
-          animation: 'spin 2s linear infinite'
         }}>
-          Loading...
+          <MySpinner/>
         </div>
       )}
       <div style={{
