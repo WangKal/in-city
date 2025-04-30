@@ -172,7 +172,7 @@ export default function Home() {
     <div style={{ 
       width: '100vw', 
       height: '100vh', 
-      backgroundColor: '#121212', 
+      backgroundColor: 'white', 
       display: 'flex', 
       justifyContent: 'center', 
       alignItems: 'center',
@@ -192,17 +192,16 @@ export default function Home() {
       )}
       <div style={{
         width: '100vw',
-        height: '100vh',
-        backgroundColor: '#1e1e1e',
-        borderRadius: '12px',
-        boxShadow: '0px 0px 30px rgba(0,0,0,0.6)',
-        overflow: 'hidden'
+        height: '80vh',
+        backgroundColor: 'white',
+       overflow: 'hidden'
       }}>
         <Canvas
           camera={{ position: [0, 0, 5], fov: 60 }}
           onCreated={({ camera }) => {
             cameraRef.current = camera;
           }}
+          shadows
           style={{ width: '100%', height: '100%' }}
         >
            {/* HDRI Background and lighting */}
@@ -214,8 +213,22 @@ export default function Home() {
   </Suspense>
 
   {/* Optional lights if you still want small boosts */}
-  <ambientLight intensity={0.2} />
-  <directionalLight position={[5, 10, 5]} intensity={0.5} castShadow />
+  <ambientLight intensity={0.5} />
+  <directionalLight 
+    position={[10, 30, 10]} 
+    intensity={1.2} 
+    castShadow 
+    shadow-mapSize-width={2048}
+    shadow-mapSize-height={2048}
+    shadow-camera-near={1}
+    shadow-camera-far={100}
+    shadow-camera-left={-50}
+    shadow-camera-right={50}
+    shadow-camera-top={50}
+    shadow-camera-bottom={-50}
+    color={0xfff0e5}
+
+   />
 
           {/* OrbitControls for interactive camera movement */}
           <OrbitControls
