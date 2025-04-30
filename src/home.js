@@ -192,7 +192,7 @@ export default function Home() {
       )}
       <div style={{
         width: '100vw',
-        height: '80vh',
+        height: '100vh',
         backgroundColor: 'white',
        overflow: 'hidden'
       }}>
@@ -207,13 +207,13 @@ export default function Home() {
            {/* HDRI Background and lighting */}
   <Suspense fallback={null}>
   <color attach="background" args={['white']} />
-    {/* <Environment preset="sunset" background /> */}
+     <Environment preset="sunset"  /> 
     {/* "sunset", "warehouse", "city", "dawn", "forest", etc. */}
     {/* OR use a real HDR file: <Environment files="/path/to/yourHDR.hdr" background /> */}
   </Suspense>
 
   {/* Optional lights if you still want small boosts */}
-  <ambientLight intensity={0.5} />
+  <ambientLight intensity={0.2} />
   <directionalLight 
     position={[10, 30, 10]} 
     intensity={1.2} 
