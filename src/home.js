@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment  } from '@react-three/drei';
-import { Box3, Vector3, Color, SRGBColorSpace, ACESFilmicToneMapping } from 'three';
+import { Box3, Vector3, Color, SRGBColorSpace, ACESFilmicToneMapping,ShaderMaterial, Mesh, DoubleSide } from 'three';
 import { ClipLoader } from "react-spinners";
 
 function MySpinner() {
@@ -54,17 +54,17 @@ function Model({ url, controlsRef, cameraRef, setLoading }) {
 }
 
 
-function MovingCar({ url, initialPosition, direction = 'forward'  }) {
+function MovingCar({ url, initialPosition, direction = 'forward', curphase  }) {
   const carRef = useRef();
   const { scene } = useGLTF(url);
-  const [phase, setPhase] = useState('zMove'); // 'zMove' or 'xMove'
+  const [phase, setPhase] = useState(curphase); // 'zMove' or 'xMove'
 
   const resetPosition = () => {
     if (carRef.current) {
       carRef.current.position.set(...initialPosition);
     carRef.current.rotation.y = (5 * Math.PI) / 180;; 
     
-      setPhase('zMove');
+      setPhase(curphase);
     }
   };
 
@@ -77,28 +77,78 @@ function MovingCar({ url, initialPosition, direction = 'forward'  }) {
   const moveZ = -Math.cos(angle); 
   const speed = 20;
 
+ 
+  if (direction === 'forward'){ 
   carRef.current.position.x += moveX * speed * delta;
   carRef.current.position.z += moveZ * speed * delta;
 
-  if (direction === 'forward' && carRef.current.position.z < -400) {
-    carRef.current.rotation.y = (-Math.PI / 2); // Rotate 90 degrees
+if (carRef.current.position.z < -400) {
+  carRef.current.rotation.y = (-Math.PI / 2); // Rotate 90 degrees
+    
     setPhase('xMove');
   }
-  if (direction === 'backward' && carRef.current.position.z > -250) {
-        carRef.current.rotation.y = Math.PI / 2; // Rotate 90 degrees right (clockwise)
-        setPhase('xMove');
+  }
+  if (direction === 'backward'){
+   
+   carRef.current.position.x -= moveX * speed * delta;
+   carRef.current.position.z -= moveZ * speed * delta;
+
+      if(carRef.current.position.z > -250) {
+        resetPosition();
+   }
       }
 }
 
 
 else if (phase === 'xMove') {
+      
+
       carRef.current.position.x += (direction === 'forward' ? 1 : -1) * 10 * delta; // Move in x axis
 
-      if (direction === 'forward' && carRef.current.position.x > 300) {
+      if (direction === 'forward'){
+      
+       if(carRef.current.position.x > 300) {
         resetPosition();
       }
-      if (direction === 'backward' && carRef.current.position.x < 200) {
+    }
+      if (direction === 'backward'){
+        carRef.current.rotation.y = (Math.PI / 2); // Rotate 90 degrees
+ 
+        if(carRef.current.position.x < 248) {
+      
+ carRef.current.rotation.y = (185 * Math.PI) / 180;
+
+        setPhase('zMove');
+      }
+      }
+     
+    }
+
+    else if (phase === 'xMove2') {
+      
+
+      carRef.current.position.x += (direction === 'forward' ? 1 : -1) * 10 * delta; // Move in x axis
+
+      if (direction === 'forward'){
+    const angle = (-10 * Math.PI) / 180; // 10 degrees tilt
+
+  carRef.current.rotation.y = (-Math.PI / 2); // Rotate 90 degrees
+      
+       if(carRef.current.position.x > 300) {
         resetPosition();
+      }
+    }
+      if (direction === 'backward'){
+       
+
+        carRef.current.rotation.y = (Math.PI / 2); // Rotate 90 degrees
+ 
+        if(carRef.current.position.x < 80) {
+      
+ carRef.current.rotation.y = (185 * Math.PI) / 180;
+
+        resetPosition();
+      }
       }
      
     }
@@ -108,7 +158,7 @@ else if (phase === 'xMove') {
     }
   });
 
-  return <primitive ref={carRef} object={scene} position={initialPosition} scale={2} 
+  return <primitive ref={carRef} object={scene} position={initialPosition} scale={2} curphase={curphase} 
        />;
 }
 // ToneMapping component to apply realistic lighting and exposure settings
@@ -161,6 +211,54 @@ function Marker({ position }) {
   )
 }
 
+
+// Shader code for animated water
+const waterShader = {
+  vertexShader: `
+    varying vec2 vUv;
+    uniform float time;
+    void main() {
+      vUv = uv;
+      vec3 pos = position;
+      pos.z += sin(pos.x * 2.0 + time) * 0.3;
+      pos.z += cos(pos.y * 3.0 + time * 1.5) * 0.2;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+    }
+  `,
+  fragmentShader: `
+    varying vec2 vUv;
+    uniform float time;
+    void main() {
+      float brightness = 0.8 + 0.2 * sin(vUv.x * 10.0 + time * 2.0);
+      vec3 waterColor = vec3(0.0, 0.4, 0.7) * brightness;
+      gl_FragColor = vec4(waterColor, 1.0);
+    }
+  `
+};
+
+function WaterSurface() {
+  const shaderRef = useRef();
+
+  useFrame(({ clock }) => {
+    if (shaderRef.current) {
+      shaderRef.current.uniforms.time.value = clock.getElapsedTime();
+    }
+  });
+
+  return (
+    <mesh position={[260, 10, -200]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[10, 10, 64, 64]} />
+      <shaderMaterial
+        ref={shaderRef}
+        vertexShader={waterShader.vertexShader}
+        fragmentShader={waterShader.fragmentShader}
+        uniforms={{ time: { value: 0 } }}
+        side={DoubleSide}
+      />
+    </mesh>
+  );
+
+}
 
 
 export default function Home() {
@@ -247,8 +345,11 @@ export default function Home() {
           <Suspense fallback={null}>
           <color attach="background" args={['white']} />
             <Model url="/incity2.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
-           <MovingCar url="/car1.glb" initialPosition={[260, 0, -200]} direction="forward" />
-           
+           <MovingCar url="/car1.glb" initialPosition={[260, 0, -200]} direction="forward" curphase="zMove" />
+            <MovingCar url="/car2.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove" />
+            <MovingCar url="/car3.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove2" />
+            <MovingCar url="/car4.glb" initialPosition={[80, 0, -400]} direction="forward" curphase="xMove2" />
+                                   
 
              {/* Markers */}
           <Marker position={[50, 40, -200]} />
@@ -265,6 +366,9 @@ export default function Home() {
           <Marker position={[230, 10, -200]} />
            <Marker position={[205, 10, -110]} />
           <Marker position={[260, 50, -200]} />
+
+
+  
           </Suspense>
 
 
