@@ -344,7 +344,7 @@ export default function Home() {
           {/* Suspense to handle the loading state of the model */}
           <Suspense fallback={null}>
           <color attach="background" args={['white']} />
-            <Model url="/incity2.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
+            <Model url="/incity.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
            <MovingCar url="/car1.glb" initialPosition={[260, 0, -200]} direction="forward" curphase="zMove" />
             <MovingCar url="/car2.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove" />
             <MovingCar url="/car3.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove2" />
