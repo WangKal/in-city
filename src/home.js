@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState, Suspense } from 'react';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment  } from '@react-three/drei';
+import { OrbitControls, useGLTF, Environment, useTexture  } from '@react-three/drei';
 import { Box3, Vector3, Color, SRGBColorSpace, ACESFilmicToneMapping,ShaderMaterial, Mesh, DoubleSide } from 'three';
 import { ClipLoader } from "react-spinners";
+
 
 function MySpinner() {
   return <ClipLoader color="#ffffff" size={50} />;
@@ -43,9 +44,13 @@ function Model({ url, controlsRef, cameraRef, setLoading }) {
       cameraRef.current.position.set(center.x, center.y + (size.y * 0.1), cameraZ);
       cameraRef.current.lookAt(center);
 
-      setLoading(false); // ✅ Hide loading spinner once model is loaded
-    
-      
+     // Wait for one animation frame after loading before hiding the spinner
+    requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+    setLoading(false);
+  });
+});
+
 
     }
   }, [scene, controlsRef, cameraRef, setLoading]);
@@ -176,39 +181,61 @@ function ToneMapping() {
   return null;
 }
 
-function Marker({ position }) {
+function Marker({ position, imageUrl }) {
   const meshRef = useRef();
   const auraRef = useRef();
+  const [showImage, setShowImage] = useState(false);
+  const texture = useTexture(imageUrl);
+  const { camera } = useThree();
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
+    const scale = 1 + Math.sin(state.clock.elapsedTime * 4) * 0.3;
     if (meshRef.current && auraRef.current) {
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 4) * 0.3;
       meshRef.current.scale.set(scale, scale, scale);
-      auraRef.current.scale.set(scale * 1.2, scale * 1.2, scale * 1.2); // Aura slightly bigger
+      auraRef.current.scale.set(scale * 1.2, scale * 1.2, scale * 1.2);
     }
   });
 
   return (
     <group position={position}>
-      {/* Main white sphere */}
-      <mesh ref={meshRef}>
+      {/* Main clickable sphere */}
+      <mesh ref={meshRef} onClick={() => setShowImage(!showImage)}>
         <sphereGeometry args={[2, 64, 64]} />
         <meshStandardMaterial color="white" />
       </mesh>
 
-      {/* Blue aura */}
+      {/* Aura effect */}
       <mesh ref={auraRef}>
-        <sphereGeometry args={[3.2, 64, 64]} /> {/* slightly larger radius */}
+        <sphereGeometry args={[3.2, 64, 64]} />
         <meshStandardMaterial 
           color="#000000"
           transparent
-          opacity={0.5} 
+          opacity={0.5}
           emissive="#004080"
           emissiveIntensity={2}
         />
       </mesh>
+
+      {/* Image plane when clicked */}
+      {showImage && (
+        <mesh position={[6, 4, 0]}>
+          <planeGeometry args={[50, 40]} />
+          <meshBasicMaterial map={texture} transparent />
+        </mesh>
+      )}
     </group>
-  )
+  );
+}
+
+function RoadLabel({ position, imageUrl,rotation }) {
+  const texture = useTexture(imageUrl);
+
+  return (
+    <mesh position={position} rotation={rotation}>
+      <planeGeometry args={[30, 20]} />
+      <meshBasicMaterial map={texture} transparent />
+    </mesh>
+  );
 }
 
 
@@ -259,6 +286,63 @@ function WaterSurface() {
   );
 
 }
+function DropUpMenu() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div style={{
+      position: 'absolute',
+      bottom: '20px',
+      right: '20px',
+      zIndex: 20,
+    }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          background: '#222',
+          color: 'white',
+          padding: '10px 15px',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+        }}
+      >
+        {open ? 'Close ▲' : 'View Duplex ▼'}
+      </button>
+
+      {open && (
+        <div style={{
+          marginTop: '10px',
+          background: '#fff',
+          border: '1px solid #ccc',
+          borderRadius: '5px',
+          padding: '10px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+          position: 'absolute',
+          bottom: '50px',
+          right: '0',
+          minWidth: '260px'  // Set minimum width to avoid early wrapping
+        }}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            <li><a href="https://www.youtube.com/watch?v=ZGLsuKx84YQ" target="_blank" rel="noopener noreferrer" style={menuBtnStyle}>289 Incity Suites 3 Bed duplex</a></li>
+            <li><a href="https://www.youtube.com/watch?v=U3z-Mwj8omc" target="_blank" rel="noopener noreferrer" style={menuBtnStyle}>289 Incity Suites 2 Bed duplex</a></li>
+            <li><a href="https://youtu.be/5H-D-uMpul8" target="_blank" rel="noopener noreferrer" style={menuBtnStyle}>289 Incity Suites 1 Bed duplex</a></li>
+            <li><a href="https://www.youtube.com/watch?v=Kq02auvbdn0" target="_blank" rel="noopener noreferrer" style={menuBtnStyle}>289 Incity Suites Studio</a></li>
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const menuBtnStyle = {
+  display: 'inline-block',
+  whiteSpace: 'nowrap',
+  color: '#000',
+  padding: '8px 0',
+  textDecoration: 'none',
+  cursor: 'pointer',
+};
 
 
 export default function Home() {
@@ -291,11 +375,11 @@ export default function Home() {
       <div style={{
         width: '100vw',
         height: '100vh',
-        backgroundColor: 'white',
+        backgroundColor: '#121212',
        overflow: 'hidden'
       }}>
         <Canvas
-          camera={{ position: [0, 0, 5], fov: 60 }}
+          camera={{ position: [0, 5, 5], fov: 60 }}
           onCreated={({ camera }) => {
             cameraRef.current = camera;
           }}
@@ -337,7 +421,7 @@ export default function Home() {
             autoRotate={false}
             autoRotateSpeed={1}
             minDistance={1}
-            maxDistance={200}
+            maxDistance={250}
             minPolarAngle={Math.PI / 4}   // 45 degrees down
             maxPolarAngle={Math.PI / 2}/>
           <ToneMapping />
@@ -352,31 +436,58 @@ export default function Home() {
                                    
 
              {/* Markers */}
-          <Marker position={[50, 40, -200]} />
-          <Marker position={[120, 40, -200]} />
-          <Marker position={[140, 40, -200]} />
-          <Marker position={[160, 40, -150]} />
-          <Marker position={[160, 40, -150]} />
-          <Marker position={[180, 40, -185]} />
-          <Marker position={[150, 40, -95]} />
-          <Marker position={[80, 40, -95]} />
-          <Marker position={[80, 40, -145]} />
+          <Marker position={[25, 20, -380]} imageUrl="/MainGate.png" />
+          <Marker position={[10, 10, -200]} imageUrl="/MainGate.png" />
+          <Marker position={[20, 10, -165]} imageUrl="/MainGate.png" />
+          
+          <Marker position={[15, 10, -100]} imageUrl="/Boulevard.png" />
+          
 
-          <Marker position={[90, 10, -180]} />
-          <Marker position={[230, 10, -200]} />
-           <Marker position={[205, 10, -110]} />
-          <Marker position={[260, 50, -200]} />
+          <Marker position={[50, 40, -200]} imageUrl="/RoofTerrace.png" />
+          <Marker position={[120, 40, -200]} imageUrl="/RoofTerrace.png"/>
+          <Marker position={[140, 40, -200]} imageUrl="/RoofTerrace.png"/>
+          <Marker position={[160, 40, -150]} imageUrl="/RoofTerrace.png"/>
+          <Marker position={[180, 40, -185]} imageUrl="/RoofTerrace.png"/>
+          <Marker position={[150, 40, -95]} imageUrl="/RoofTerrace.png"/>
+          <Marker position={[80, 40, -95]} imageUrl="/RoofTerrace.png"/>
+          <Marker position={[80, 40, -145]} imageUrl="/RoofTerrace.png"/>
 
-
+          <Marker position={[90, 10, -180]} imageUrl="/ClubHouse.png"/>
+          <Marker position={[230, 10, -200]} imageUrl="/ConvenienceStore.png"/>
+           <Marker position={[230, 10, -147]} imageUrl="/SecondaryGate.png"/>
+           
+           <Marker position={[205, 40, -110]} imageUrl="/FoodCourt.png"/>
+    
+<RoadLabel position={[260, 1, -245]} imageUrl="/MeruRoad.png" rotation ={[-Math.PI / 2, 0, 39.4]} />
+  <RoadLabel position={[170, 1, -390]} imageUrl="/GeneralWaruingiStreet.png" rotation ={[-Math.PI / 2, 0, 28.3]}/>
+  <RoadLabel position={[120, 1, -68]} imageUrl="/LumbwaStreet.png" rotation ={[-Math.PI / 2, 0, 31.5]}/>
   
+ 
           </Suspense>
-
-
 
 
 
   
         </Canvas>
+
+{/* 🔹 Logo in top-left corner */}
+    <img
+      src="/Logo.png"
+      alt="Logo"
+      style={{
+        position: 'absolute',
+        top: '20px',
+        left: '20px',
+        height: '60px',
+        zIndex: 20
+      }}
+    />
+
+    {/* 🔹 Drop-up button at bottom-right */}
+    <DropUpMenu />
+
+
+
       </div>
 
       {/* CSS for the loading spinner */}
