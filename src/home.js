@@ -443,7 +443,7 @@ export default function Home() {
           <Marker position={[80, 40, -95]} imageUrl="/RoofTerrace.png"/>
           <Marker position={[80, 40, -145]} imageUrl="/RoofTerrace.png"/>
 
-          <Marker position={[90, 10, -180]} imageUrl="/ClubHouse.png"/>
+          <Marker position={[90, 10, -180]} imageUrl="/Clubhouse.png"/>
           <Marker position={[230, 10, -200]} imageUrl="/ConvenienceStore.png"/>
            <Marker position={[230, 10, -147]} imageUrl="/SecondaryGate.png"/>
            
