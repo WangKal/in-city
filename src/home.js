@@ -382,7 +382,7 @@ export default function Home() {
           shadows
           style={{ width: '100%', height: '100%' }}
         >
-     
+ 
 
   {/* Optional lights if you still want small boosts */}
   <ambientLight intensity={0.2} />
@@ -418,7 +418,7 @@ export default function Home() {
           {/* Suspense to handle the loading state of the model */}
           <Suspense fallback={null}>
           <color attach="background" args={['white']} />
-             <Environment preset="sunset"  /> 
+          <Environment preset="sunset"  /> 
             <Model url="/incity.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
            <MovingCar url="/car1.glb" initialPosition={[260, 0, -200]} direction="forward" curphase="zMove" />
             <MovingCar url="/car2.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove" />
