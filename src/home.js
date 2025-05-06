@@ -44,13 +44,9 @@ function Model({ url, controlsRef, cameraRef, setLoading }) {
       cameraRef.current.position.set(center.x, center.y + (size.y * 0.1), cameraZ);
       cameraRef.current.lookAt(center);
 
-     // Wait for one animation frame after loading before hiding the spinner
-    requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-    setLoading(false);
-  });
-});
-
+      setLoading(false); // ✅ Hide loading spinner once model is loaded
+    
+      
 
     }
   }, [scene, controlsRef, cameraRef, setLoading]);
@@ -375,7 +371,7 @@ export default function Home() {
       <div style={{
         width: '100vw',
         height: '100vh',
-        backgroundColor: '#121212',
+        backgroundColor: '#12121',
        overflow: 'hidden'
       }}>
         <Canvas
@@ -386,13 +382,7 @@ export default function Home() {
           shadows
           style={{ width: '100%', height: '100%' }}
         >
-           {/* HDRI Background and lighting */}
-  <Suspense fallback={null}>
-  <color attach="background" args={['white']} />
-     <Environment preset="sunset"  /> 
-    {/* "sunset", "warehouse", "city", "dawn", "forest", etc. */}
-    {/* OR use a real HDR file: <Environment files="/path/to/yourHDR.hdr" background /> */}
-  </Suspense>
+     
 
   {/* Optional lights if you still want small boosts */}
   <ambientLight intensity={0.2} />
@@ -428,6 +418,7 @@ export default function Home() {
           {/* Suspense to handle the loading state of the model */}
           <Suspense fallback={null}>
           <color attach="background" args={['white']} />
+             <Environment preset="sunset"  /> 
             <Model url="/incity.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
            <MovingCar url="/car1.glb" initialPosition={[260, 0, -200]} direction="forward" curphase="zMove" />
             <MovingCar url="/car2.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove" />
