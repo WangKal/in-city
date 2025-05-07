@@ -159,7 +159,7 @@ else if (phase === 'xMove') {
     }
   });
 
-  return <primitive ref={carRef} object={scene} position={initialPosition} scale={2} curphase={curphase} 
+  return <primitive ref={carRef} object={scene} position={initialPosition} scale={1.5} curphase={curphase} 
        />;
 }
 // ToneMapping component to apply realistic lighting and exposure settings
@@ -177,18 +177,31 @@ function ToneMapping() {
   return null;
 }
 
+
 function Marker({ position, imageUrl }) {
   const meshRef = useRef();
   const auraRef = useRef();
+  const imageRef = useRef();
   const [showImage, setShowImage] = useState(false);
   const texture = useTexture(imageUrl);
   const { camera } = useThree();
 
-  useFrame((state) => {
-    const scale = 1 + Math.sin(state.clock.elapsedTime * 4) * 0.3;
+  useFrame(() => {
+    const scale = 1 + Math.sin(camera.position.length() * 0.5) * 0.3;
     if (meshRef.current && auraRef.current) {
       meshRef.current.scale.set(scale, scale, scale);
       auraRef.current.scale.set(scale * 1.2, scale * 1.2, scale * 1.2);
+    }
+
+    // Rotate marker relative to the camera
+    if (meshRef.current) {
+      // Rotate the marker based on camera position or orientation
+      meshRef.current.rotation.y = camera.rotation.y; // Makes the marker rotate with the camera
+    }
+
+    // Optionally, you can also update the image based on camera movement
+    if (imageRef.current) {
+      imageRef.current.rotation.y = camera.rotation.y; // Sync image rotation to camera
     }
   });
 
@@ -214,7 +227,7 @@ function Marker({ position, imageUrl }) {
 
       {/* Image plane when clicked */}
       {showImage && (
-        <mesh position={[6, 4, 0]}>
+        <mesh ref={imageRef} position={[18, 15, 0]}>
           <planeGeometry args={[30, 20]} />
           <meshBasicMaterial map={texture} transparent />
         </mesh>
@@ -222,7 +235,6 @@ function Marker({ position, imageUrl }) {
     </group>
   );
 }
-
 function RoadLabel({ position, imageUrl,rotation,size }) {
   const texture = useTexture(imageUrl);
 
@@ -427,19 +439,20 @@ export default function Home() {
                                    
 
              {/* Markers */}
-          <Marker position={[25, 20, -380]} imageUrl="/MainGate.png" />
-          <Marker position={[10, 10, -200]} imageUrl="/MainGate.png" />
-          <Marker position={[20, 10, -165]} imageUrl="/MainGate.png" />
+          <Marker position={[25, 50, -380]} imageUrl="/MainGate.png" />
+          <Marker position={[10, 50, -200]} imageUrl="/MainGate.png" />
+          <Marker position={[20, 50, -165]} imageUrl="/MainGate.png" />
           
-          <Marker position={[15, 10, -100]} imageUrl="/Boulevard.png" />
+          <Marker position={[40, 50, -130]} imageUrl="/ECD.png" />
+          <Marker position={[30, 50, -300]} imageUrl="/Boulevard.png" />
           
 
           
-          <Marker position={[90, 10, -180]} imageUrl="/Clubhouse.png"/>
-          <Marker position={[230, 10, -200]} imageUrl="/ConvenienceStore.png"/>
-           <Marker position={[230, 10, -147]} imageUrl="/SecondaryGate.png"/>
+          <Marker position={[90, 50, -180]} imageUrl="/Clubhouse.png"/>
+          <Marker position={[230, 50, -200]} imageUrl="/ConvenienceStore.png"/>
+           <Marker position={[230, 50, -147]} imageUrl="/SecondaryGate.png"/>
            
-           <Marker position={[215, 10, -130]} imageUrl="/FoodCourt.png"/>
+           <Marker position={[215, 50, -130]} imageUrl="/FoodCourt.png"/>
     
 <RoadLabel position={[259, 0.5, -245]} imageUrl="/Meru.png" rotation ={[-Math.PI / 2, 0, 39.4]} size ={[30, 7]}/>
   <RoadLabel position={[170, 0.5, -390]} imageUrl="/General.png" rotation ={[-Math.PI / 2, 0, 28.3]} size ={[70, 7]}/>
@@ -455,7 +468,7 @@ export default function Home() {
 
 {/* 🔹 Logo in top-left corner */}
     <img
-      src="/Logo.png"
+      src="/inCityLogoWhite.png"
       alt="Logo"
       style={{
         position: 'absolute',
