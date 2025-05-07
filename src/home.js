@@ -468,7 +468,7 @@ export default function Home() {
 
 {/* 🔹 Logo in top-left corner */}
     <img
-      src="/inCityLogoWhite.png"
+      src="/main_logo.png"
       alt="Logo"
       style={{
         position: 'absolute',
