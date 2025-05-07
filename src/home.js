@@ -434,15 +434,7 @@ export default function Home() {
           <Marker position={[15, 10, -100]} imageUrl="/Boulevard.png" />
           
 
-          <Marker position={[50, 50, -200]} imageUrl="/RoofTerrace.png" />
-          <Marker position={[120, 50, -200]} imageUrl="/RoofTerrace.png"/>
-          <Marker position={[140, 50, -200]} imageUrl="/RoofTerrace.png"/>
-          <Marker position={[160, 50, -150]} imageUrl="/RoofTerrace.png"/>
-          <Marker position={[180, 50, -185]} imageUrl="/RoofTerrace.png"/>
-          <Marker position={[150, 50, -95]} imageUrl="/RoofTerrace.png"/>
-          <Marker position={[80, 50, -95]} imageUrl="/RoofTerrace.png"/>
-          <Marker position={[80, 50, -145]} imageUrl="/RoofTerrace.png"/>
-
+          
           <Marker position={[90, 10, -180]} imageUrl="/Clubhouse.png"/>
           <Marker position={[230, 10, -200]} imageUrl="/ConvenienceStore.png"/>
            <Marker position={[230, 10, -147]} imageUrl="/SecondaryGate.png"/>
