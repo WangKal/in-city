@@ -427,7 +427,7 @@ export default function Home() {
             minPolarAngle={Math.PI / 4}   // 45 degrees down
             maxPolarAngle={Math.PI / 2}/>
           <ToneMapping />
-          {/* Suspense to handle the loading state of the model */}
+          {/* Suspense to handle the loading of state of the model */}
           <Suspense fallback={null}>
           <color attach="background" args={['#28282B']} />
           <Environment preset="sunset"  /> 
