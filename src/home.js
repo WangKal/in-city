@@ -438,7 +438,7 @@ export default function Home() {
             <MovingCar url="/car4.glb" initialPosition={[80, 0, -400]} direction="forward" curphase="xMove2" />
                                    
 
-             {/* Markers */}
+             {/* Markers latest */}
           <Marker position={[25, 10, -380]} imageUrl="/MainGate.png" />
           <Marker position={[15, 10, -165]} imageUrl="/MainGate.png" />
           
