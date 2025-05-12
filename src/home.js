@@ -227,7 +227,7 @@ function Marker({ position, imageUrl }) {
 
       {/* Image plane when clicked */}
       {showImage && (
-        <mesh ref={imageRef} position={[18, 15, 0]}>
+        <mesh ref={imageRef} position={[10, 15, 0]}>
           <planeGeometry args={[30, 20]} />
           <meshBasicMaterial map={texture} transparent />
         </mesh>
@@ -431,7 +431,7 @@ export default function Home() {
           <Suspense fallback={null}>
           <color attach="background" args={['#28282B']} />
           <Environment preset="sunset"  /> 
-            <Model url="/incity.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
+            <Model url="/incity3.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
            <MovingCar url="/car1.glb" initialPosition={[260, 0, -200]} direction="forward" curphase="zMove" />
             <MovingCar url="/car2.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove" />
             <MovingCar url="/car3.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove2" />
@@ -439,20 +439,19 @@ export default function Home() {
                                    
 
              {/* Markers */}
-          <Marker position={[25, 50, -380]} imageUrl="/MainGate.png" />
-          <Marker position={[10, 50, -200]} imageUrl="/MainGate.png" />
-          <Marker position={[20, 50, -165]} imageUrl="/MainGate.png" />
+          <Marker position={[25, 10, -380]} imageUrl="/MainGate.png" />
+          <Marker position={[15, 10, -165]} imageUrl="/MainGate.png" />
           
-          <Marker position={[40, 50, -130]} imageUrl="/ECD.png" />
-          <Marker position={[30, 50, -300]} imageUrl="/Boulevard.png" />
+          <Marker position={[30, 10, -142]} imageUrl="/ECD.png" />
+          <Marker position={[30, 10, -300]} imageUrl="/Boulevard.png" />
           
 
           
-          <Marker position={[90, 50, -180]} imageUrl="/Clubhouse.png"/>
-          <Marker position={[230, 50, -200]} imageUrl="/ConvenienceStore.png"/>
-           <Marker position={[230, 50, -147]} imageUrl="/SecondaryGate.png"/>
+          <Marker position={[90, 10, -180]} imageUrl="/Clubhouse.png"/>
+          <Marker position={[230, 10, -200]} imageUrl="/ConvenienceStore.png"/>
+           <Marker position={[230, 10, -147]} imageUrl="/SecondaryGate.png"/>
            
-           <Marker position={[215, 50, -130]} imageUrl="/FoodCourt.png"/>
+           <Marker position={[215, 10, -130]} imageUrl="/FoodCourt.png"/>
     
 <RoadLabel position={[259, 0.5, -245]} imageUrl="/Meru.png" rotation ={[-Math.PI / 2, 0, 39.4]} size ={[30, 7]}/>
   <RoadLabel position={[170, 0.5, -390]} imageUrl="/General.png" rotation ={[-Math.PI / 2, 0, 28.3]} size ={[70, 7]}/>
