@@ -431,14 +431,14 @@ export default function Home() {
           <Suspense fallback={null}>
           <color attach="background" args={['#28282B']} />
           <Environment preset="sunset"  /> 
-            <Model url="https://drive.google.com/uc?export=download&id=1WFpXsfsOOGQV-l3pPe-r_n-cj5DTup2E" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
+            <Model url="/incity3.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
            <MovingCar url="/car1.glb" initialPosition={[260, 0, -200]} direction="forward" curphase="zMove" />
-            <MovingCar url="/public/car2.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove" />
-            <MovingCar url="/public/car3.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove2" />
-            <MovingCar url="/public/car4.glb" initialPosition={[80, 0, -400]} direction="forward" curphase="xMove2" />
+            <MovingCar url="/car2.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove" />
+            <MovingCar url="/car3.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove2" />
+            <MovingCar url="/car4.glb" initialPosition={[80, 0, -400]} direction="forward" curphase="xMove2" />
                                    
 
-             {/* Markers latest */}
+             {/* Markers */}
           <Marker position={[25, 10, -380]} imageUrl="/MainGate.png" />
           <Marker position={[15, 10, -165]} imageUrl="/MainGate.png" />
           
