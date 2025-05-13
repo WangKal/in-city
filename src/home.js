@@ -427,15 +427,15 @@ export default function Home() {
             minPolarAngle={Math.PI / 4}   // 45 degrees down
             maxPolarAngle={Math.PI / 2}/>
           <ToneMapping />
-          {/* Suspense to handle the loading   state of the model */}
+          {/* Suspense to handle the loading state of the model */}
           <Suspense fallback={null}>
           <color attach="background" args={['#28282B']} />
           <Environment preset="sunset"  /> 
-            <Model url="/inc.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
+            <Model url="/incity.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
            <MovingCar url="/car1.glb" initialPosition={[260, 0, -200]} direction="forward" curphase="zMove" />
-            <MovingCar url="/car1.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove" />
-            <MovingCar url="/car1.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove2" />
-            <MovingCar url="/car1.glb" initialPosition={[80, 0, -400]} direction="forward" curphase="xMove2" />
+            <MovingCar url="/car2.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove" />
+            <MovingCar url="/car3.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove2" />
+            <MovingCar url="/car4.glb" initialPosition={[80, 0, -400]} direction="forward" curphase="xMove2" />
                                    
 
              {/* Markers */}
