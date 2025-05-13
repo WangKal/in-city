@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/(.*\\.glb)", "destination": "/$1" }
+  ]
+}
