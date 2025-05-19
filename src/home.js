@@ -315,7 +315,7 @@ function DropUpMenu() {
           cursor: 'pointer',
         }}
       >
-        {open ? 'Close ▲' : 'View Duplex ▼'}
+        {open ? 'Close ▲' : 'View Apartment Videos ▼'}
       </button>
 
       {open && (
