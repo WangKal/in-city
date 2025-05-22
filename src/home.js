@@ -193,16 +193,14 @@ function Marker({ position, imageUrl }) {
       auraRef.current.scale.set(scale * 1.2, scale * 1.2, scale * 1.2);
     }
 
-    // Rotate marker relative to the camera
-    if (meshRef.current) {
-      // Rotate the marker based on camera position or orientation
-      meshRef.current.rotation.y = camera.rotation.y; // Makes the marker rotate with the camera
-    }
+      if (meshRef.current) {
+    meshRef.current.lookAt(camera.position);
+  }
 
-    // Optionally, you can also update the image based on camera movement
-    if (imageRef.current) {
-      imageRef.current.rotation.y = camera.rotation.y; // Sync image rotation to camera
-    }
+  // Also rotate the image to face the camera
+  if (imageRef.current) {
+    imageRef.current.lookAt(camera.position);
+  }
   });
 
   return (
