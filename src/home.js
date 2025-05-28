@@ -313,7 +313,7 @@ function DropUpMenu() {
           cursor: 'pointer',
         }}
       >
-        {open ? 'Close ▲' : 'View Apartment Videos ▼'}
+        {open ? 'Close ▲' : 'View Unit Typologies ▼'}
       </button>
 
       {open && (
@@ -429,7 +429,7 @@ export default function Home() {
           <Suspense fallback={null}>
           <color attach="background" args={['#28282B']} />
           <Environment preset="sunset"  /> 
-            <Model url="/icity.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
+            <Model url="/incity2.glb" controlsRef={controlsRef} cameraRef={cameraRef} setLoading={setLoading} />
            <MovingCar url="/car1.glb" initialPosition={[260, 0, -200]} direction="forward" curphase="zMove" />
             <MovingCar url="/car2.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove" />
             <MovingCar url="/car3.glb" initialPosition={[300, 0, -385]} direction="backward" curphase="xMove2" />
@@ -437,8 +437,8 @@ export default function Home() {
                                    
 
              {/* Markers */}
-          <Marker position={[25, 10, -380]} imageUrl="/MainGate.png" />
-          <Marker position={[15, 10, -165]} imageUrl="/MainGate.png" />
+          <Marker position={[25, 10, -380]} imageUrl="/MainEntrance.png" />
+          {/* <Marker position={[15, 10, -165]} imageUrl="/MainGate.png" />*/}
           
           <Marker position={[30, 10, -142]} imageUrl="/ECD.png" />
           <Marker position={[30, 10, -300]} imageUrl="/Boulevard.png" />
